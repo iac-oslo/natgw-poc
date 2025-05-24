@@ -15,27 +15,30 @@ There are 10 new IP addresses that need to be whitelisted by partners and we nee
 
 After some whiteboarding and head scratching, we came up with the following solution for this test lab environment:
 
- - use Public IP Prefix with `/29` subnet mask to allocate 8 IP addresses for active environment and another `/29` for DR environment
+ - use [Public IP Prefix](https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/public-ip-address-prefix) with `/29` subnet mask to allocate 8 IP addresses for active environment and another `/29` for DR environment
  - provision all Public IPs from the Prefixes
- - use NAT Gateway to route outbound traffic through specified IP address
- - use Azure Deployment Scrips integrated into Private VNet https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/deployment-script-vnet
- - use Bicep to provision the environment
+ - use [Azure Deployment Scrips integrated with Private VNet](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/deployment-script-vnet)
+ - use [NAT Gateway](https://learn.microsoft.com/en-us/azure/nat-gateway/nat-overview) and configure Deployment Scripts subnet to route outbound traffic through specified IP address
+ - use PowerShell [Test-Connection](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/test-connection?view=powershell-7.5) command to test connectivity
+ 
+ Deployment Scripts will be executed in the context of the VNet, and VNet is configured to route outbound traffic via NAT Gateway. Since we can programmatically change NAT GW IP address, we can execute connectivity tests towards partners for each of the available Public IP addresses.
 
-Here is the pseudo-code of the solution:
+Here is the pseudo-code of this POC solution:
 
 - provision lab environment 
 - for each IP from available IP list
  - configure NAT Gateway to use specified IP address
- - deploy Deployment Script with pre-configured commands to test connectivity to partner IP / FQDN at the specified port
+ - deploy Deployment Script with with connectivity tests towards partners
  - collect results
- - repeat for all IPs
+ - repeat 
+- generate report 
 - decommission lab environment
 
 # The implementation
 
-The POC implementation is located in [this repo](https://github.com/iac-oslo/natgw-poc) inside the `iac` folder. The IaC code is orchestrated by `main.bicep` script and all infrastructure resources are collected inside `modules/infra.bicep` file. 
+The POC implementation is located in [this repo](https://github.com/iac-oslo/natgw-poc) inside the `iac` folder. The infra code is orchestrated by `main.bicep` script and all infrastructure resources are collected inside `modules/infra.bicep` file. 
 
-Very simple version of the PowerShell script that tests connectivity towards partner IP / FQDN is located in `testPartners.ps1` file. The list of partners is implemented as an array of strings. 
+Very simple version of connectivity tests towards partner IP / FQDN is located in `testPartners.ps1` file. The list of partners is implemented as an array of strings. 
 
 ```powershell
 ...
@@ -54,7 +57,21 @@ scriptContent: loadTextContent('testPartners.ps1')
 ...
 ```
 
-The `deploy-and-test.ps1` script first deploys lab environment and then runs the tests. 
+The script execution results exposed via Bicep `output` property.
+
+```bicep
+...
+output results array = dsTest.properties.outputs.results
+```
+
+and then queried and outputted to the console from the deployment command:
+
+```powershell
+...
+az deployment group ...  --query properties.outputs.results.value
+```
+
+Here is the result of executing this script at my environment `deploy-and-test.ps1`... 
 
 ```powershell
 ❯❯ iac git:(main) 23:33 .\deploy-and-test.ps1
