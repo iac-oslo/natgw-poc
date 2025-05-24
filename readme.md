@@ -31,7 +31,7 @@ Here is the pseudo-code of the solution:
  - repeat for all IPs
 - decommission lab environment
 
-# The code
+# The implementation
 
 The POC implementation is located in [this repo](https://github.com/iac-oslo/natgw-poc) inside the `iac` folder. The IaC code is orchestrated by `main.bicep` script and all infrastructure resources are collected inside `modules/infra.bicep` file. 
 
