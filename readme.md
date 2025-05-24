@@ -1,4 +1,4 @@
-# Setting up the context
+# POC description
 
 My customer uses Azure Secured Hub with Azure Firewall where all outbound traffic is routed through Azure Firewall egress IP. 
 Now customer decided to switch to [Bring Your Own IP version of Azure Firewall](https://learn.microsoft.com/en-us/azure/firewall/secured-hub-customer-public-ip) (which is still in Public Preview though). Customer uses A LOT of partners APIs and some of them require whitelisting of Azure Firewall IP address. 
