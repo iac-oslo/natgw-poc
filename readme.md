@@ -116,7 +116,7 @@ This output can be used to generate a report showing the progress of whitelistin
 
 # Cleaning up
 
-If you deployed this POC into your environment, donæt forget to clean up the resources when you finished.
+If you deployed this POC into your environment, don't forget to clean up the resources when you finished.
 
 ```powershell
 az group delete --resource-group rg-natgw-poc --yes
