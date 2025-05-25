@@ -1,7 +1,7 @@
 # POC description
 
 My customer uses Azure Secured Hub with Azure Firewall where all outbound traffic is routed through Azure Firewall egress IP. 
-Now customer decided to switch to [Bring Your Own IP version of Azure Firewall](https://learn.microsoft.com/en-us/azure/firewall/secured-hub-customer-public-ip) (at the time of writing is still in Public Preview). Customer commmunicates with a lot of partners APIs and some of them require whitelisting of Azure Firewall IP address. 
+Now customer decided to switch to [Bring Your Own IP version of Azure Firewall](https://learn.microsoft.com/en-us/azure/firewall/secured-hub-customer-public-ip) (at the time of writing is still in Public Preview). Customer services commmunicate with a lot of partners APIs and some of them require whitelisting of Azure Firewall IP address at the partner side. 
 Following [recommendations](https://learn.microsoft.com/en-us/azure/firewall/firewall-known-issues), to avoid `SNAT port exhaustion`, Azure Firewall has to be configured with a minimum of 5 IP addresses. This means that before customer can switch to new Azure Firewall, new set of IP adresses need to be whitelisted with partners. DR plan is also affected, as customer needs to request partners to whitelist new IP addresses for DR Azure Firewall as well. 
 
 # The challenge
