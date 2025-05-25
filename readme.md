@@ -15,20 +15,20 @@ There will be 16 new IP addresses that need to be whitelisted by partners and we
 
 After some whiteboarding and head scratching, we came up with the following solution for this test lab environment:
 
- - use [Public IP Prefix](https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/public-ip-address-prefix) with `/29` subnet mask to allocate 8 IP addresses for active environment and another `/29` for DR environment. We use Prefix resource because we will know all new IP values from the IP range in advance. 
- - provision all Public IPs from the Prefixes
- - use [Azure Deployment Scrips integrated with Private VNet](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/deployment-script-vnet)
- - use [NAT Gateway](https://learn.microsoft.com/en-us/azure/nat-gateway/nat-overview) and configure Deployment Scripts subnet to route outbound traffic through specified IP address
+ - use [Public IP Prefix](https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/public-ip-address-prefix) with `/29` subnet mask to allocate 8 IP addresses for active environment and another `/29` for DR environment. We use Prefix resource because we will know all new IP values from the IP range in advance
+ - during test session, provision all Public IPs from the Prefixes
+ - use [Azure Deployment Scrips integrated with Private VNet](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/deployment-script-vnet) to execute connectivity tests
+ - use [NAT Gateway](https://learn.microsoft.com/en-us/azure/nat-gateway/nat-overview) and configure Deployment Scripts subnet to route outbound traffic through one IP address
  - use PowerShell [Test-Connection](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/test-connection?view=powershell-7.5) command to test connectivity
  
- Deployment Scripts will be executed in the context of the VNet, and VNet is configured to route outbound traffic via NAT Gateway. Since we can programmatically change NAT GW IP address, we can execute connectivity tests towards partners for each of the available Public IP addresses.
+ Deployment Scripts will be executed from within VNet, and VNet is configured to route outbound traffic via NAT Gateway. Since we can programmatically change NAT GW IP address, we can execute connectivity tests towards partners for each of the available Public IP addresses.
 
 Here is the pseudo-code of this POC solution:
 
 - provision lab environment 
 - for each IP from available IP list
  - configure NAT Gateway to use specified IP address
- - deploy Deployment Script with with connectivity tests towards partners
+ - deploy Deployment Script and execute connectivity tests towards partners
  - collect results
  - repeat 
 - generate report 
