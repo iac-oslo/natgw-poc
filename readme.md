@@ -15,7 +15,7 @@ There will be 16 new IP addresses that need to be whitelisted by partners and we
 
 After some whiteboarding and head scratching, we came up with the following solution for this test lab environment:
 
- - use [Public IP Prefix](https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/public-ip-address-prefix) with `/29` subnet mask to allocate 8 IP addresses for active environment and another `/29` for DR environment. We use Prefix resource because we will know all new IP values from the IP range in advanced. 
+ - use [Public IP Prefix](https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/public-ip-address-prefix) with `/29` subnet mask to allocate 8 IP addresses for active environment and another `/29` for DR environment. We use Prefix resource because we will know all new IP values from the IP range in advance. 
  - provision all Public IPs from the Prefixes
  - use [Azure Deployment Scrips integrated with Private VNet](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/deployment-script-vnet)
  - use [NAT Gateway](https://learn.microsoft.com/en-us/azure/nat-gateway/nat-overview) and configure Deployment Scripts subnet to route outbound traffic through specified IP address
